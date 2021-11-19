@@ -15,7 +15,7 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Flatten
 
-## Above is for importing library ##
+## IMPORTING LIBRARIES ##
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -29,7 +29,7 @@ parser.add_argument('-p', '--path', type = str, default='./', help='destination 
 parser.add_argument('-x', '--per', type=int, default=50, help='perplexity amount for TSNE')
 parser.add_argument('-i', '--iter', type=int, default=5000, help='number of iterations for TSNE')
 
-##Above is for important variable call out
+## SETTING VARIABLES ##
 
 args = parser.parse_arg()
 out_res = args.res
@@ -39,7 +39,7 @@ to_plot = np.square(out_dim)
 perplexity = args.per
 tsne_iter = arg.iter
 
-##above is for define Universal Variables ##
+## DEFINING UNIVERSAL VARIABLES ##
 
 if out_dim == 1:
     raise ValueError("output grid dimension 1x1 not supported")
@@ -54,16 +54,15 @@ if os.path.exist(args.path):
 else:
     raise argparse.ArgumentTypeError("'{}' not a valid directory.".format(out_dir))
 
-## Above is for fool-proof ##
-## python is object oriented computer language ##
+## PROOFING ##
 
-def build_model(): #def + : always!
+def build_model(): 
     base_model = VGG16(weights = 'imagenet')
     top_model = Sequential()
     top_model.add(Flatten(input_shape = base_model.output_shape[1:]))
     return Model(inputs = base_model.input, outputs = top_model(base_model.output))
 
-#using few API, we are building model
+## BUILDING MODEL ~~ :) ##
 
 def load_img(in_dir):
     pred_img = [f for f in os.listdir(in_dir) if os.path.isfile(os.path.join(indir, f))]
@@ -76,7 +75,7 @@ def load_img(in_dir):
         raise ValueError("Cannot fit {} images in {} x {} grid".format(len(img_collection), out_dim, out_dim))
     return img_collection
 
-## load img
+## LOADING IMAGES
 
 def get_activation(model, img_collection):
     activations = []
@@ -91,7 +90,7 @@ def get_activation(model, img_collection):
         activations.append(np.squeeze(model.predict(x)))
     return activations
 
-#activating - get the file feady to be implemented to the TSNE
+## activating - Get the file ready to be implemented to the TSNE
 
 def generate_tsne(activations):
     tsne = TSNE(perplexity = perplexity, n_component=2, init='random', n_iter = tsne_iter)
@@ -117,7 +116,7 @@ def save_tsne_grid(img_collection, X_2d, out_res, out_dim)
     im = image.array_to_img(out)
     im.save(out_dir + out_name, quality=100)
 
-## Saving the fiel result
+## Saving the files as results
 
 def main():
     model = build_model()
@@ -128,4 +127,4 @@ def main():
     print("Generating image grid.")
     save_tsne_grid(img_collection, X_2d, out_res, out_dim)
 
-## main is the conductor of the whole definitions. ##
+## define main as conductor of the whole definitions - cheers ##
